@@ -1,0 +1,448 @@
+TASK MANAGER - PASOS RÁPIDOS
+
+========================================
+1. ESTRUCTURA DEL PROYECTO
+========================================
+
+task-manager/
+├── backend/
+├── frontend/
+└── docker-compose.yml
+
+
+========================================
+2. LEVANTAR POSTGRES CON DOCKER
+========================================
+
+Archivo: docker-compose.yml
+
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: taskmanager_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: taskmanager
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+
+
+Comando para levantarlo:
+
+docker compose up -d
+
+
+Comando para apagarlo:
+
+docker compose down
+
+
+Comando para borrar también el volumen:
+
+docker compose down -v
+
+
+Comprobar que está levantado:
+
+docker ps
+
+
+========================================
+3. BACKEND - CREAR .env
+========================================
+
+Archivo: backend/.env
+
+PORT=3001
+DATABASE_URL="postgresql://postgres:postgres123@localhost:5432/taskmanager?schema=public"
+JWT_SECRET=123456
+
+
+========================================
+4. BACKEND - INSTALAR NEST Y PRISMA
+========================================
+
+Entrar al backend:
+
+cd backend
+
+Instalar dependencias Prisma + Postgres:
+
+npm install prisma --save-dev
+npm install @prisma/client
+npm install @prisma/adapter-pg pg
+
+Inicializar Prisma:
+
+npx prisma init
+
+
+========================================
+5. CONFIGURAR PRISMA 7
+========================================
+
+Archivo: backend/prisma.config.ts
+
+import "dotenv/config";
+import { defineConfig, env } from "prisma/config";
+
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: {
+    path: "prisma/migrations",
+  },
+  datasource: {
+    url: env("DATABASE_URL"),
+  },
+});
+
+
+========================================
+6. SCHEMA PRISMA
+========================================
+
+Archivo: backend/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  SUPER_ADMIN
+  COMPANY_ADMIN
+  EMPLOYEE
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum NotificationType {
+  TASK_ASSIGNED
+  TASK_STATUS_CHANGED
+  GENERAL
+}
+
+model Company {
+  id        Int      @id @default(autoincrement())
+  name      String
+  users     User[]
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id                Int             @id @default(autoincrement())
+  name              String
+  email             String          @unique
+  password          String
+  role              Role
+  companyId         Int
+  company           Company         @relation(fields: [companyId], references: [id])
+
+  assignedTasks     Task[]          @relation("AssignedTasks")
+  createdTasks      Task[]          @relation("CreatedTasks")
+  notifications     Notification[]
+  taskHistory       TaskHistory[]
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model Task {
+  id                Int             @id @default(autoincrement())
+  title             String
+  description       String?
+  status            TaskStatus      @default(TODO)
+  priority          TaskPriority    @default(MEDIUM)
+  dueDate           DateTime?
+  position          Int             @default(0)
+  startedAt         DateTime?
+  completedAt       DateTime?
+
+  companyId         Int
+  company           Company         @relation(fields: [companyId], references: [id])
+
+  assignedToId      Int
+  assignedTo        User            @relation("AssignedTasks", fields: [assignedToId], references: [id])
+
+  createdById       Int
+  createdBy         User            @relation("CreatedTasks", fields: [createdById], references: [id])
+
+  history           TaskHistory[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model Notification {
+  id                Int               @id @default(autoincrement())
+  title             String
+  message           String
+  type              NotificationType  @default(GENERAL)
+  isRead            Boolean           @default(false)
+
+  userId            Int
+  user              User              @relation(fields: [userId], references: [id])
+
+  createdAt         DateTime          @default(now())
+}
+
+model TaskHistory {
+  id                Int         @id @default(autoincrement())
+
+  taskId            Int
+  task              Task        @relation(fields: [taskId], references: [id])
+
+  fromStatus        TaskStatus?
+  toStatus          TaskStatus
+
+  changedById       Int
+  changedBy         User        @relation(fields: [changedById], references: [id])
+
+  createdAt         DateTime    @default(now())
+}
+
+
+========================================
+7. MIGRACIONES Y STUDIO
+========================================
+
+Generar cliente Prisma:
+
+npx prisma generate
+
+Crear tablas en la base de datos:
+
+npx prisma migrate dev --name init
+
+Abrir Prisma Studio:
+
+npx prisma studio
+
+
+========================================
+8. CREAR FRONTEND NEXT
+========================================
+
+Desde la raíz del proyecto:
+
+npx create-next-app@latest frontend
+
+Opciones recomendadas:
+- TypeScript: Yes
+- ESLint: Yes
+- Tailwind CSS: Yes
+- src directory: No
+- App Router: Yes
+- Import alias: Yes
+
+Entrar al frontend:
+
+cd frontend
+
+Instalar axios + i18n:
+
+npm install axios next-intl
+
+Arrancar frontend:
+
+npm run dev
+
+
+========================================
+9. BACKEND - AUTH NECESARIO
+========================================
+
+Instalar auth en Nest:
+
+npm install @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt
+npm install -D @types/passport-jwt @types/bcrypt
+
+
+========================================
+10. BACKEND - ESTRUCTURA DE MÓDULOS
+========================================
+
+src/
+├── auth/
+├── companies/
+├── users/
+├── tasks/
+├── notifications/
+├── prisma/
+├── common/
+│   ├── guards/
+│   ├── decorators/
+│   └── enums/
+├── app.module.ts
+└── main.ts
+
+
+========================================
+11. PRISMA SERVICE EN NEST
+========================================
+
+Archivo: src/prisma/prisma.service.ts
+
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+
+@Injectable()
+export class PrismaService extends PrismaClient implements OnModuleInit {
+  constructor() {
+    const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+    super({ adapter });
+  }
+
+  async onModuleInit() {
+    await this.$connect();
+  }
+}
+
+
+Archivo: src/prisma/prisma.module.ts
+
+import { Global, Module } from '@nestjs/common';
+import { PrismaService } from './prisma.service';
+
+@Global()
+@Module({
+  providers: [PrismaService],
+  exports: [PrismaService],
+})
+export class PrismaModule {}
+
+
+========================================
+12. IMPORTAR PRISMA MODULE
+========================================
+
+Archivo: src/app.module.ts
+
+import { Module } from '@nestjs/common';
+import { PrismaModule } from './prisma/prisma.module';
+
+@Module({
+  imports: [PrismaModule],
+})
+export class AppModule {}
+
+
+========================================
+13. ORDEN DE DESARROLLO
+========================================
+
+1. Docker + Postgres
+2. Prisma + migración
+3. PrismaService
+4. Auth
+5. Companies
+6. Users
+7. Tasks
+8. Notifications
+9. Frontend Next
+10. Kanban tipo Trello
+11. Emails / avisos
+
+
+========================================
+14. COMANDOS RÁPIDOS IMPORTANTES
+========================================
+
+Levantar docker:
+docker compose up -d
+
+Parar docker:
+docker compose down
+
+Backend instalar dependencias:
+npm install
+
+Frontend instalar dependencias:
+npm install
+
+Generar Prisma:
+npx prisma generate
+
+Migración Prisma:
+npx prisma migrate dev --name init
+
+Abrir Studio:
+npx prisma studio
+
+Arrancar backend:
+npm run start:dev
+
+Arrancar frontend:
+npm run dev
+
+
+========================================
+15. IDEA DE PERMISOS
+========================================
+
+SUPER_ADMIN
+- ve todo
+- gestiona todas las empresas
+- gestiona todos los usuarios
+- ve todas las tareas
+
+COMPANY_ADMIN
+- ve solo su empresa
+- ve usuarios de su empresa
+- ve tareas de su empresa
+- crea y mueve tareas
+
+EMPLOYEE
+- ve sus tareas
+- cambia estado si se permite
+
+
+========================================
+16. COLUMNAS TIPO TRELLO
+========================================
+
+TODO
+IN_PROGRESS
+DONE
+
+Eso va en el enum TaskStatus.
+El frontend lo pinta en 3 columnas.
+Mover tarea = cambiar status.
+
+
+========================================
+17. SIGUIENTE PASO REAL AHORA
+========================================
+
+Si la base ya está creada:
+
+- crear PrismaService
+- crear módulo auth
+- hacer login con JWT
+- crear CRUD de Company
+- crear CRUD de User
+- crear CRUD de Task
