@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+//[] = de 1 a N
+
+enum Role {
+  SUPER_ADMIN
+  COMPANY_ADMIN
+  EMPLOYEE
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum NotificationType {
+  TASK_ASSIGNED
+  TASK_STATUS_CHANGED
+  GENERAL
+}
+
+model Company {
+  id        Int      @id @default(autoincrement())
+  name      String
+  users     User[]
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id                Int             @id @default(autoincrement())
+  name              String
+  email             String          @unique
+  password          String
+  role              Role
+  companyId         Int?
+  company           Company?        @relation(fields: [companyId], references: [id])
+
+  assignedTasks     Task[]          @relation("AssignedTasks")
+  createdTasks      Task[]          @relation("CreatedTasks")
+  notifications     Notification[]
+  taskHistory       TaskHistory[]
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model Task {
+  id                Int             @id @default(autoincrement())
+  title             String
+  description       String?
+  status            TaskStatus      @default(TODO)
+  priority          TaskPriority    @default(MEDIUM)
+  dueDate           DateTime?
+
+  companyId         Int
+  company           Company         @relation(fields: [companyId], references: [id])
+
+  assignedToId      Int
+  assignedTo        User            @relation("AssignedTasks", fields: [assignedToId], references: [id])
+
+  createdById       Int
+  createdBy         User            @relation("CreatedTasks", fields: [createdById], references: [id])
+
+  history           TaskHistory[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model Notification {
+  id                Int               @id @default(autoincrement())
+  title             String
+  message           String
+  type              NotificationType  @default(GENERAL)
+  isRead            Boolean           @default(false)
+
+  userId            Int
+  user              User              @relation(fields: [userId], references: [id])
+
+  createdAt         DateTime          @default(now())
+}
+
+model TaskHistory {
+  id                Int         @id @default(autoincrement())
+
+  taskId            Int
+  task              Task        @relation(fields: [taskId], references: [id])
+
+  fromStatus        TaskStatus?
+  toStatus          TaskStatus
+
+  changedById       Int
+  changedBy         User        @relation(fields: [changedById], references: [id])
+
+  createdAt         DateTime    @default(now())
+}

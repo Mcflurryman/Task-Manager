@@ -1,0 +1,15 @@
+
+
+services:
+  db:
+    image: postgres:16
+    container_name: taskmanager_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: taskmanager
+    ports:
+      - "5432:5432"
+
+# levantar docker: "docker compose up -d"
