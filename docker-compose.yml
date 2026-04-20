@@ -10,6 +10,6 @@ services:
       POSTGRES_PASSWORD: postgres123
       POSTGRES_DB: taskmanager
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
 # levantar docker: "docker compose up -d"

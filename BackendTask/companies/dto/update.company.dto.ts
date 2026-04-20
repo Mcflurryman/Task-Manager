@@ -1,3 +1,3 @@
-export class UpdateCompanyDto {
-    name: string;
-}
+ export class UpdateCompanyDto {
+     name: string;
+ }

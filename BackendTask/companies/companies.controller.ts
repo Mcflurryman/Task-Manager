@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Param, } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Param, Delete, } from '@nestjs/common';
 import { CompaniesService } from './companies.services';
 import { CreateCompanyDto } from './dto/create.company.dto';
 import { UpdateCompanyDto } from './dto/update.company.dto';
@@ -23,4 +23,5 @@ update(
 ) {
   return this.companiesService.update(Number(id), updateCompanyDto);
 }
+
 }
