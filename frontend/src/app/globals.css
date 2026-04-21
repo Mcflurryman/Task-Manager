@@ -1,26 +1,49 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+.login {
+  @apply min-h-screen flex justify-center items-center p-6 bg-slate-500;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.titleLogin {
+  @apply mb-3 text-center;
+  height: 20px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.card {
+  @apply w-full max-w-[380px] bg-white border border-slate-200 p-6 shadow-[0_10px_30px_rgba(15,23,42,0.08)] flex flex-col gap-[14px];
+  border-radius: 1px;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.card h2 {
+  @apply m-0 mb-2 text-[1.3rem] text-slate-900;
+} 
+
+.card label {
+  @apply block mb-1.5 text-[0.95rem] text-slate-700;
+}
+
+.card input {
+  @apply w-full px-3 py-2.5 rounded-lg border border-slate-300 outline-none text-stone-600;
+}
+
+.card input:focus {
+  @apply border-blue-600 ring-4 ring-blue-500/20;
+}
+
+.card button {
+  @apply mt-1.5 px-3 py-2.5 border-0 rounded-[18px] bg-[#2b343d] text-white font-semibold cursor-pointer;
+}
+
+.card button:hover {
+  @apply bg-[#c6d4e6];
+}
+
+.error {
+  @apply m-0 text-red-700 text-sm;
+}
+
+.success {
+  @apply m-0 text-green-700 text-sm;
 }
