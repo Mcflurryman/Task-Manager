@@ -6,6 +6,12 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [PrismaModule, TasksModule, CompaniesModule, AuthModule, UsersModule],
+  imports: [
+    PrismaModule,
+    TasksModule,
+    CompaniesModule,
+    AuthModule,
+    UsersModule,
+  ],
 })
 export class AppModule {}

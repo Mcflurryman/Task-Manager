@@ -1,7 +1,7 @@
-import { Role } from "@prisma/client";
+import { Role } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateUserDto {
-    @ApiProperty()
+  @ApiProperty()
   name: string;
   @ApiProperty()
   email: string;
