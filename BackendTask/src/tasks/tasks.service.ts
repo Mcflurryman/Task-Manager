@@ -5,7 +5,14 @@ import { PrismaService } from '../prisma/prisma.service';
 export class TasksService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return this.prisma.task.findMany();
+  findByAssignedUser(userId: number) {
+    return this.prisma.task.findMany({
+      where: {
+        assignedToId: userId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 }

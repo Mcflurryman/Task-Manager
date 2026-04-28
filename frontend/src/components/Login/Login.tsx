@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -26,6 +28,14 @@ const Login = () => {
       const backendMessage =
         res.data?.message ??
         "Si el correo se envio correctamente, revisa tu bandeja de entrada.";
+
+      if (res.data?.access_token) {
+        localStorage.setItem("token", res.data.access_token);
+        router.push("/employees");
+        setMessage(backendMessage);
+        setIsError(false);
+        return;
+      }
 
       setMessage(`${backendMessage}${devCodeMessage}`);
       setIsError(false);
@@ -50,6 +60,7 @@ const Login = () => {
       });
 
       localStorage.setItem("token", res.data.access_token);
+      router.push("/employees");
       setMessage("Codigo correcto.");
       setIsError(false);
     } catch (error) {

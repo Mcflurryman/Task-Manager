@@ -20,4 +20,26 @@ export class UsersService {
   findAll() {
     return this.prisma.user.findMany();
   }
-}
+
+findEmployees() {
+  return this.prisma.user.findMany({
+    where: {
+      role: 'EMPLOYEE',
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      companyId: true,
+      _count: {
+        select: {
+          assignedTasks: true,
+        },
+      },
+    },
+    orderBy: {
+      name: 'asc',
+    },
+  });
+}}

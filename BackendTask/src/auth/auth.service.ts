@@ -25,15 +25,33 @@ export class AuthService {
     pass: string,
   ): Promise<{
     success: boolean;
-    delivered: boolean;
+    delivered?: boolean;
+    access_token?: string;
     devCode?: string;
     message?: string;
     reason?: string;
+    skippedSecurityCode?: boolean;
   }> {
     const user = await this.usersService.findOne(email);
 
-    if (user?.password !== pass) {
+    if (!user || user.password !== pass) {
       throw new UnauthorizedException();
+    }
+
+    if (process.env.SKIP_SECURITY_CODE === 'true') {
+      const payload = {
+        sub: user.id,
+        email: user.email,
+        role: user.role,
+        companyId: user.companyId,
+      };
+
+      return {
+        success: true,
+        access_token: await this.jwtService.signAsync(payload),
+        skippedSecurityCode: true,
+        message: 'Codigo de seguridad omitido para pruebas.',
+      };
     }
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -85,10 +103,22 @@ export class AuthService {
 
     this.pendingCodes.delete(email);
 
-    const payload = { sub: user.id, email: user.email };
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+      companyId: user.companyId,
+    };
 
     return {
       access_token: await this.jwtService.signAsync(payload),
+    };
+  }
+
+  logout(): { success: boolean; message: string } {
+    return {
+      success: true,
+      message: 'Sesion cerrada correctamente.',
     };
   }
 }
