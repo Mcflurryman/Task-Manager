@@ -1,8 +1,40 @@
 @import "tailwindcss";
 
+:root {
+  --color-bg: #ffffff;
+  --color-login-bg: #eef3ec;
+  --color-surface: #ffffff;
+  --color-surface-soft: #e6ede2;
+  --color-surface-hover: #f2f6f0;
+  --color-text: #0f1411;
+  --color-muted: #4f5b52;
+  --color-border: #111827;
+  --color-border-strong: #000000;
+  --color-primary: #2f4a3a;
+  --color-primary-hover: #243a2d;
+  --color-primary-text: #ffffff;
+  --gradient-button: linear-gradient(180deg, #ffffff 0%, #cacaca 100%);
+  --gradient-button-hover: linear-gradient(180deg, #828884 0%, #9ca39f 100%);
+  --color-focus: #5f7a67;
+  --color-focus-ring: rgb(95 122 103 / 0.28);
+  --color-low-bg: #d8e6d2;
+  --color-low-text: #243f2a;
+  --color-medium-bg: #e8dfc8;
+  --color-medium-text: #56492b;
+  --color-high-bg: #e6d1cd;
+  --color-high-text: #62312c;
+  --color-error: #8a2d2b;
+  --color-success: #3eac54;
+  --radius-card: 2px;
+  --radius-button: 999px;
+  --radius-input: 10px;
+  --shadow-card: 0 14px 34px rgb(15 20 17 / 0.1);
+  --shadow-button: 0 6px 14px rgb(15 20 17 / 0.18);
+}
+
 
 .login {
-  @apply min-h-screen flex justify-center items-center p-6 bg-slate-500;
+  @apply min-h-screen flex justify-center items-center p-6 bg-[var(--color-login-bg)] text-[var(--color-text)];
 }
 
 .titleLogin {
@@ -12,48 +44,59 @@
 }
 
 .card {
-  @apply w-full max-w-[380px] bg-white border border-slate-200 p-6 shadow-[0_10px_30px_rgba(15,23,42,0.08)] flex flex-col gap-[14px];
-  border-radius: 1px;
+  @apply w-full max-w-[380px] bg-[var(--color-surface)] border border-[var(--color-border)] p-6 text-center flex flex-col gap-[14px];
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
 }
 
 .card h2 {
-  @apply m-0 mb-2 text-[1.3rem] text-slate-900;
+  @apply m-0 mb-2 text-[1.3rem] text-[var(--color-text)];
 } 
 
 .card label {
-  @apply block mb-1.5 text-[0.95rem] text-slate-700;
+  @apply block mb-1.5 text-[0.95rem] text-[var(--color-muted)];
 }
 
 .card input {
-  @apply w-full px-3 py-2.5 rounded-lg border border-slate-300 outline-none text-stone-600;
+  @apply w-full px-3 py-2.5 border border-[var(--color-border)] outline-none text-[var(--color-text)];
+  border-radius: var(--radius-input);
 }
 
 .card input:focus {
-  @apply border-blue-600 ring-4 ring-blue-500/20;
+  @apply border-[var(--color-focus)] ring-4 ring-[var(--color-focus-ring)];
 }
 
 .card button {
-  @apply mt-1.5 px-3 py-2.5 border-0 rounded-[18px] bg-[#2b343d] text-white font-semibold cursor-pointer;
+  @apply mt-1.5 px-3 py-2.5 border border-[var(--color-border)] text-[var(--color-primary-text)] font-semibold cursor-pointer;
+  background: var(--gradient-button);
+  border-radius: var(--radius-button);
+  box-shadow: var(--shadow-button);
 }
 
 .card button:hover {
-  @apply bg-[#c6d4e6];
+  background: var(--gradient-button-hover);
 }
 
 .error {
-  @apply m-0 text-red-700 text-sm;
+  @apply m-0 text-[var(--color-error)] text-sm;
 }
 
 .success {
-  @apply m-0 text-green-700 text-sm;
+  @apply m-0 text-[var(--color-success)] text-sm;
 }
 
 .dashboard {
-  @apply min-h-screen bg-slate-100 px-6 py-8 text-slate-900;
+  @apply min-h-screen bg-[var(--color-bg)] px-6 py-8 text-[var(--color-text)];
+  width: 100%;
 }
 
 .dashboardHeader {
-  @apply mx-auto flex w-full max-w-5xl items-center justify-between gap-4 border-b border-slate-300 pb-5;
+  @apply mx-auto grid w-full grid-cols-[1fr_auto_1fr] items-center gap-4 border-b border-[var(--color-border)] pb-5;
+  max-width: none;
+}
+
+.dashboardHeader > div:first-child {
+  @apply col-start-2 text-center;
 }
 
 .dashboardHeader h1 {
@@ -61,39 +104,59 @@
 }
 
 .dashboardHeader button {
-  @apply rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700;
+  @apply whitespace-nowrap border border-[var(--color-border)] px-4 py-2 text-sm font-semibold text-[var(--color-text)];
+  background: var(--gradient-button);
+  border-radius: var(--radius-button);
+  box-shadow: var(--shadow-button);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.dashboardHeader > button {
+  grid-column-start: 3;
+  justify-self: end;
+}
+
+.dashboardHeader button:hover {
+  background: var(--gradient-button-hover);
 }
 
 .dashboardActions {
-  @apply flex flex-wrap items-center justify-end gap-3;
+  @apply col-start-3 flex flex-wrap items-center justify-end gap-3;
 }
 
 .dashboardEyebrow {
-  @apply mb-1 text-sm font-semibold uppercase tracking-wide text-slate-500;
+  @apply mb-1 text-sm font-semibold uppercase tracking-wide text-[var(--color-muted)];
 }
 
 .dashboardMessage {
-  @apply mx-auto mt-6 max-w-5xl text-slate-700;
+  @apply mx-auto mt-6 w-full text-[var(--color-muted)];
+  max-width: none;
 }
 
 .trelloBoard {
-  @apply mx-auto mt-6 grid w-full max-w-5xl grid-cols-1 gap-4 lg:grid-cols-3;
+  @apply mx-auto mt-6 grid w-full grid-cols-1 gap-4 lg:grid-cols-3;
+  max-width: none;
 }
 
 .trelloColumn {
-  @apply flex min-h-[420px] flex-col rounded-md border border-slate-300 bg-slate-200 p-3;
+  @apply flex min-h-[420px] flex-col border border-[var(--color-border)] bg-[var(--color-surface-soft)] p-3;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
 }
 
 .trelloColumnHeader {
-  @apply mb-3 flex items-center justify-between gap-3 px-1;
+  @apply mb-3 flex items-center justify-center gap-3 px-1 text-center;
 }
 
 .trelloColumnHeader h2 {
-  @apply m-0 text-base font-bold text-slate-800;
+  @apply m-0 text-base font-bold text-[var(--color-text)];
 }
 
 .trelloColumnHeader span {
-  @apply rounded bg-slate-300 px-2 py-1 text-xs font-bold text-slate-700;
+  @apply hidden;
 }
 
 .trelloColumnBody {
@@ -101,15 +164,16 @@
 }
 
 .emptyColumn {
-  @apply rounded-md border border-dashed border-slate-400 bg-white/60 p-4 text-sm text-slate-600;
+  @apply rounded-md border border-dashed border-[var(--color-border-strong)] bg-white/70 p-4 text-center text-sm text-[var(--color-muted)];
 }
 
 .taskCard {
-  @apply rounded-md border border-slate-200 bg-white p-5 shadow-sm;
+  @apply rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] p-5 text-center;
+  box-shadow: var(--shadow-card);
 }
 
 .taskCardHeader {
-  @apply mb-3 flex items-start justify-between gap-3;
+  @apply mb-3 flex flex-col items-center justify-center gap-3;
 }
 
 .taskCard h3 {
@@ -117,11 +181,11 @@
 }
 
 .taskCard p {
-  @apply mb-4 text-sm text-slate-600;
+  @apply mb-4 text-sm text-[var(--color-muted)];
 }
 
 .taskMeta {
-  @apply flex flex-wrap gap-2 text-xs font-semibold text-slate-500;
+  @apply flex flex-wrap justify-center gap-2 text-xs font-semibold text-[var(--color-muted)];
 }
 
 .priority {
@@ -129,27 +193,34 @@
 }
 
 .priority-LOW {
-  @apply bg-emerald-100 text-emerald-800;
+  @apply bg-[var(--color-low-bg)] text-[var(--color-low-text)];
 }
 
 .priority-MEDIUM {
-  @apply bg-amber-100 text-amber-800;
+  @apply bg-[var(--color-medium-bg)] text-[var(--color-medium-text)];
 }
 
 .priority-HIGH {
-  @apply bg-red-100 text-red-800;
+  @apply bg-[var(--color-high-bg)] text-[var(--color-high-text)];
 }
 
 .employeeList {
-  @apply mx-auto mt-6 grid w-full max-w-5xl grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3;
+  @apply mx-auto mt-6 grid w-full grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3;
+  max-width: none;
 }
 
 .employeeCard {
-  @apply flex min-h-[132px] items-center gap-4 rounded-md border border-slate-300 bg-white p-5 text-left shadow-sm hover:border-slate-500 hover:bg-slate-50;
+  @apply flex min-h-[132px] items-center gap-4 rounded-md border border-[var(--color-border)] p-5 text-center text-[var(--color-primary-text)] hover:border-[var(--color-border-strong)];
+  background: var(--gradient-button);
+  box-shadow: var(--shadow-button);
+}
+
+.employeeCard:hover {
+  background: var(--gradient-button-hover);
 }
 
 .employeeAvatar {
-  @apply flex h-20 w-20 shrink-0 items-center justify-center rounded-md border border-dashed border-slate-300 bg-slate-100 text-2xl font-bold text-slate-500;
+  @apply flex h-20 w-20 shrink-0 items-center justify-center rounded-md border border-dashed border-[var(--color-border)] bg-[var(--color-surface-soft)] text-2xl font-bold text-[var(--color-muted)];
 }
 
 .employeeInfo {
@@ -157,9 +228,21 @@
 }
 
 .employeeInfo span {
-  @apply text-lg font-bold text-slate-900;
+  @apply text-lg font-bold text-[var(--color-text)];
 }
 
 .employeeInfo small {
-  @apply mt-1 block break-all text-sm text-slate-600;
+  @apply mt-1 block break-all text-sm text-[var(--color-muted)];
+}
+
+.employeeTaskCount {
+  @apply font-bold;
+}
+
+.employeeInfo .employeeTaskCountLow {
+  color: var(--color-success);
+}
+
+.employeeInfo .employeeTaskCountHigh {
+  color: var(--color-error);
 }

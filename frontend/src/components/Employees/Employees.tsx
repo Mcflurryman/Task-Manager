@@ -10,12 +10,9 @@ type Employee = {
   email: string;
   role: "EMPLOYEE";
   companyId: number | null;
-  assignedTasks: {
-    id: number;
-    title: string;
-    status: "TODO" | "IN_PROGRESS" | "DONE";
-    priority: "LOW" | "MEDIUM" | "HIGH";
-  }[];
+  _count: {
+    assignedTasks: number;
+  };
 };
 
 
@@ -96,7 +93,13 @@ const Employees = () => {
               <button
                 className="employeeCard"
                 key={employee.id}
-                onClick={() => router.push(`/dashboard?userId=${employee.id}`)}
+                onClick={() =>
+                  router.push(
+                    `/dashboard?userId=${employee.id}&userName=${encodeURIComponent(
+                      employee.name
+                    )}`
+                  )
+                }
                 type="button"
               >
                 <div className="employeeAvatar" aria-hidden="true">
@@ -106,7 +109,15 @@ const Employees = () => {
                 <div className="employeeInfo">
                   <span>{employee.name}</span>
                   <small>{employee.email}</small>
-                  <small>{employee.assignedTasks}</small>
+                  <small
+                        className={
+                          employee._count.assignedTasks < 3
+                            ? "employeeTaskCount employeeTaskCountLow"
+                            : "employeeTaskCount employeeTaskCountHigh"
+                        }
+                      >
+                        {employee._count.assignedTasks} Tasks
+                      </small>
                   
                 </div>
               </button>

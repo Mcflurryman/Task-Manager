@@ -35,9 +35,15 @@ const Dashboard = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const selectedUserId = searchParams?.get("userId");
+  const selectedUserName = searchParams?.get("userName");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [message, setMessage] = useState("Cargando tareas...");
   const [isLoading, setIsLoading] = useState(true);
+  const dashboardTitle = selectedUserId
+    ? selectedUserName
+      ? `Dashboard de ${selectedUserName}`
+      : "Dashboard del empleado"
+    : "Dashboard";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -105,7 +111,7 @@ const Dashboard = () => {
       <header className="dashboardHeader">
         <div>
           <p className="dashboardEyebrow">Task Manager</p>
-          <h1>{selectedUserId ? "Dashboard del empleado" : "Dashboard"}</h1>
+          <h1>{dashboardTitle}</h1>
         </div>
 
         <div className="dashboardActions">
